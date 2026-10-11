@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ilya Shynkevich · Software Developer</title>
+<meta name="description" content="Software developer in Berlin building real-time systems, IoT dashboards and data-driven applications.">
+<meta name="author" content="Ilya Shynkevich">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ilya Shynkevich · Software Developer">
+<meta property="og:description" content="Software developer in Berlin building real-time systems, IoT dashboards and data-driven applications.">
+<meta property="og:image" content="img/me.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script>
+  // Apply a saved theme before first paint so there is no flash
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one narrow centered column; quiet headings, hairline rows, one featured project, then a two-up grid. */
+  :root {
+    --bg: #fbfbfa;
+    --card: #ffffff;
+    --fg: #16181d;
+    --muted: #6b7078;
+    --line: #e6e7ea;
+    --soft: #f1f2f3;
+    --accent: #2f5d50;
+    --font: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --col: 680px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1012; --card: #14171a; --fg: #ececee; --muted: #8b9098;
+      --line: #24272b; --soft: #1a1d21; --accent: #7fb8a4; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1012; --card: #14171a; --fg: #ececee; --muted: #8b9098;
+    --line: #24272b; --soft: #1a1d21; --accent: #7fb8a4; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  img { max-width: 100%; }
+
+  /* Theme switch: the new theme sweeps in diagonally from the top-right corner (where the toggle sits) */
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  ::view-transition-new(root) { animation: theme-wipe .75s cubic-bezier(.65, 0, .35, 1) both; }
+  @keyframes theme-wipe {
+    from { clip-path: polygon(100% 0, 100% 0, 100% 0); }
+    to   { clip-path: polygon(100% 0, -100% 0, 100% 200%); }
+  }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 15px/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: 100%; max-width: calc(var(--col) + 40px); margin: 0 auto; padding-inline: 20px; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .mark { font: 600 13px var(--mono); letter-spacing: .04em; text-decoration: none; }
+  .nav-links { display: flex; align-items: center; gap: 20px; font-size: 13px; color: var(--muted); }
+  .nav-links a { text-decoration: none; }
+  .nav-links a:hover { color: var(--fg); }
+  .icon-btn {
+    display: grid; place-items: center; width: 30px; height: 30px; padding: 0;
+    border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer;
+  }
+  .icon-btn:hover { color: var(--fg); border-color: var(--muted); }
+
+  /* Hero */
+  .hero { padding-block: 56px 24px; }
+  .id { display: flex; align-items: center; gap: 18px; }
+  .avatar {
+    --size: 84px;
+    width: var(--size); height: var(--size); padding: 0; border: 0; background: none;
+    border-radius: 50%; cursor: pointer; perspective: 600px; flex: none;
+  }
+  .avatar-inner {
+    display: block; position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d; transition: transform .7s cubic-bezier(.4, .1, .2, 1);
+  }
+  .avatar[aria-pressed="true"] .avatar-inner,
+  .avatar:focus-visible .avatar-inner { transform: rotateY(180deg); }
+  @media (hover: hover) {
+    .avatar:hover .avatar-inner { transform: rotateY(180deg); }
+  }
+  .face {
+    position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: grid; place-items: center;
+    background: var(--soft) center / cover no-repeat; border: 1px solid var(--line);
+    font: 500 22px var(--mono); color: var(--muted);
+  }
+  .face.back { transform: rotateY(180deg); }
+  .face.empty { border-style: dashed; }
+  .avatar-hint { font: 400 11px var(--mono); color: var(--muted); margin-top: 6px; }
+  h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
+  .where { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .social { display: flex; gap: 8px; margin-top: 10px; }
+  .social a {
+    display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+    color: var(--muted); border: 1px solid var(--line); text-decoration: none;
+  }
+  .social a:hover { color: var(--fg); border-color: var(--muted); }
+  .social svg, .icon-btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  .headline { margin: 36px 0 12px; font-size: 22px; font-weight: 400; letter-spacing: -.015em; line-height: 1.35; text-wrap: balance; }
+  .headline span { color: var(--muted); }
+  .lede { margin: 0; max-width: 60ch; color: var(--muted); }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 16px;
+    border-radius: 8px; border: 1px solid var(--fg); background: var(--fg); color: var(--bg);
+    font: 500 13px var(--font); text-decoration: none; cursor: pointer;
+  }
+  .btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+  .btn:hover { opacity: .88; }
+  .btn.ghost:hover { border-color: var(--muted); opacity: 1; }
+
+  /* Sections */
+  section { padding-block: 40px 8px; scroll-margin-top: 56px; }
+  h2 { margin: 0 0 18px; font-size: 22px; font-weight: 300; letter-spacing: -.02em; display: flex; align-items: baseline; justify-content: space-between; }
+  h2 small { font: 400 12px var(--mono); color: var(--muted); letter-spacing: 0; }
+
+  /* Project cards */
+  .shot {
+    aspect-ratio: 16 / 10; width: 100%; border-radius: 8px; border: 1px dashed var(--line);
+    background: var(--soft); display: grid; place-items: center; text-align: center;
+    color: var(--muted); font: 400 11px var(--mono); padding: 12px; overflow: hidden;
+  }
+  .shot.has-img, .shot.has-preview { border-style: solid; padding: 0; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 10px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .card:hover { border-color: color-mix(in srgb, var(--muted) 50%, var(--line)); }
+  .card-body { padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+  .card h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -.005em; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .card p { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .badge { font: 500 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+  .badge.live { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+
+  .featured { margin-bottom: 14px; }
+  .featured .card-body { padding-top: 4px; }
+  .shot.has-img { cursor: zoom-in; }
+  a.shot { position: relative; text-decoration: none; cursor: pointer; }
+  a.shot img { transition: transform .4s ease; }
+  a.shot::after {
+    content: "Open site ↗"; position: absolute; right: 10px; bottom: 10px;
+    font: 500 11px var(--font); color: var(--fg); background: var(--card);
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px;
+    opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s;
+  }
+  a.shot:hover::after, a.shot:focus-visible::after { opacity: 1; transform: none; }
+  a.shot:hover img { transform: scale(1.02); }
+  @media (hover: none) { a.shot::after { opacity: 1; transform: none; } }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+    padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(8px); cursor: zoom-out;
+  }
+  .lightbox img {
+    max-width: min(1400px, 100%); max-height: calc(100dvh - 120px); border-radius: 10px;
+    border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,.25); cursor: default;
+    user-select: none; -webkit-user-drag: none;
+  }
+  .lb-btn {
+    position: fixed; top: 50%; transform: translateY(-50%); z-index: 51;
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--card); color: var(--fg); font: 400 20px/1 var(--font); cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .lb-btn:hover { border-color: var(--muted); }
+  .lb-prev { left: 16px; }
+  .lb-next { right: 16px; }
+  .lb-close { top: max(16px, env(safe-area-inset-top, 0px)); right: 16px; transform: none; width: 36px; height: 36px; font-size: 18px; }
+  .lb-count {
+    position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 51;
+    font: 500 12px var(--mono); color: var(--muted); background: var(--card);
+    border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;
+  }
+  @media (max-width: 640px) { .lb-prev, .lb-next { top: auto; bottom: max(10px, env(safe-area-inset-bottom, 0px)); transform: none; } }
+
+  /* Phone app: several screens side by side in one thumbnail */
+  .shot.phones { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; background: var(--soft); }
+  .shot.phones img { height: 100%; width: auto; max-width: calc(25% - 6px); object-fit: cover; object-position: top; border-radius: 8px; border: 1px solid var(--line); }
+  .shot .count {
+    position: absolute; right: 10px; bottom: 10px; font: 500 11px var(--mono); color: var(--fg);
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px;
+  }
+  .shot.has-img { position: relative; }
+
+  /* Certificate thumbnail: small preview under the row, opens full size */
+  .shot.thumb { width: 76px; aspect-ratio: 4 / 3; margin-top: 10px; border-radius: 6px; padding: 4px; font-size: 9px; }
+  .shot.thumb.has-img { padding: 0; }
+  .shot.thumb img { object-position: top; }
+  .shot.thumb:hover { border-color: var(--muted); }
+  .kicker { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .grid .wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+  .grid .wide .shot { height: 100%; aspect-ratio: auto; min-height: 230px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .tag { font: 400 11px var(--mono); color: var(--muted); background: var(--soft); border-radius: 6px; padding: 2px 8px; }
+  .links { display: flex; flex-wrap: wrap; gap: 14px; font: 500 12px var(--font); padding-top: 6px; }
+  .links a { text-decoration: none; border-bottom: 1px solid var(--line); }
+  .links a:hover { border-color: var(--fg); }
+  .links .muted { color: var(--muted); border: 0; }
+
+  /* Rows (experience, education, certificates) */
+  .rows { display: grid; }
+  .row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding-block: 16px; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; padding-top: 0; }
+  .when { font: 400 11px var(--mono); color: var(--muted); padding-top: 3px; }
+  .row h3 { margin: 0; font-size: 14.5px; font-weight: 500; }
+  .row p { margin: 0; color: var(--muted); font-size: 13px; }
+  .row .desc { color: var(--fg); opacity: .82; margin-top: 6px; font-size: 13.5px; max-width: 60ch; }
+  .row.placeholder { border: 1px dashed var(--line); border-radius: 10px; padding: 14px 16px; grid-template-columns: 1fr; }
+  .row.placeholder + .row.placeholder { margin-top: 10px; }
+
+  /* Stack */
+  .stack { display: grid; gap: 14px; }
+  .stack-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: baseline; }
+  .stack-row .when { padding-top: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 400 12.5px var(--font); border: 1px solid var(--line); border-radius: 8px; padding: 3px 10px; background: var(--card); }
+
+  /* Contact */
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .contact p { margin: 0; color: var(--muted); }
+  .link-list { display: grid; gap: 10px; }
+  .link-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--card); padding: 10px 14px; text-decoration: none;
+  }
+  a.link-item:hover { border-color: var(--muted); }
+  .link-item .lab { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: block; }
+  .link-item .val { font-size: 13.5px; overflow-wrap: anywhere; }
+  .copy { border: 0; background: none; color: var(--muted); font: 500 12px var(--font); cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+  .copy:hover { color: var(--fg); }
+
+  footer { margin-top: 56px; padding-block: 24px 48px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 400 12px var(--mono); color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .featured, .grid, .grid .wide, .contact { grid-template-columns: 1fr; }
+    .grid .wide .shot { aspect-ratio: 16 / 10; height: auto; min-height: 0; }
+    .row, .stack-row { grid-template-columns: 1fr; gap: 4px; }
+    .nav-links .hide-sm { display: none; }
+    .hero { padding-top: 36px; }
+    h1 { font-size: 23px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .avatar-inner { transition: none; }
+    .avatar[aria-pressed="true"] .avatar-inner { transform: none; }
+    .avatar .face.front { transition: opacity .2s; }
+    .avatar[aria-pressed="true"] .face.front, .avatar:hover .face.front, .avatar:focus-visible .face.front { opacity: 0; }
+    .avatar .face.back { transform: none; opacity: 0; transition: opacity .2s; }
+    .avatar[aria-pressed="true"] .face.back, .avatar:hover .face.back, .avatar:focus-visible .face.back { opacity: 1; }
+    .avatar:hover .avatar-inner, .avatar:focus-visible .avatar-inner { transform: none; }
+  }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Top">IS</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a class="hide-sm" href="#stack">Stack</a>
+      <a href="#contact">Contact</a>
+      <button class="icon-btn" id="theme" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <div class="hero">
+    <div class="id">
+      <div>
+        <!-- Front: PHOTO_A (shown by default). Back: PHOTO_B (shown on hover, or tap on touch screens). -->
+        <button class="avatar" id="avatar" type="button" aria-pressed="false" aria-label="Profile picture, hover or tap to flip">
+          <span class="avatar-inner">
+            <span class="face front empty" id="faceA">↻</span>
+            <span class="face back empty" id="faceB">IS</span>
+          </span>
+        </button>
+      </div>
+      <div>
+        <h1>Ilya Shynkevich</h1>
+        <div class="where">Berlin, Germany</div>
+        <div class="social">
+          <a href="https://github.com/IlyaShynkevich" aria-label="GitHub" title="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/ilya-shynkevich-42141b399" aria-label="LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></svg>
+          </a>
+          <a href="#contact" aria-label="Email" title="Email">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="headline" style="display:block">Software developer <span>— real-time systems and IoT dashboards.</span></h2>
+    <p class="lede">
+      Working student software developer at Persobots, a Berlin robotics startup, and final-year
+      B.Sc. Computer Science student at SRH Berlin. I build real-time systems, IoT dashboards and
+      data-driven applications, from embedded hardware up to the web interface.
+    </p>
+    <div class="cta">
+      <a class="btn" href="#projects">See projects</a>
+      <a class="btn ghost" href="#contact">Get in touch</a>
+    </div>
+  </div>
+
+  <section id="projects">
+    <h2>Projects <small>6 selected</small></h2>
+
+    <article class="card featured">
+      <div class="shot" data-shot="cansat">Screenshot placeholder<br>CanSat ground station</div>
+      <div class="card-body">
+        <span class="kicker">Featured build</span>
+        <h3>CanSat ground station <span class="badge">Mission software</span></h3>
+        <p>Desktop ground station for the SkyBound CanSat team, representing Germany and SRH University at the 2026 AAS CanSat Competition in the USA. Live serial telemetry, rolling altitude, voltage and IMU plots, 3D accelerometer and gyroscope views, GPS, a command panel and CSV export. The team finished 14th of 36. Built for one satellite, so there is no public deployment.</p>
+        <div class="tags"><span class="tag">Electron</span><span class="tag">JavaScript</span><span class="tag">Three.js</span><span class="tag">Serial</span></div>
+      </div>
+    </article>
+
+    <div class="grid">
+      <article class="card">
+        <a class="shot live" data-shot="grocery" href="https://grocery-buddy-demo.vercel.app/" aria-label="Open Grocery Buddy live demo">Preview loading<br>Grocery Buddy</a>
+        <div class="card-body">
+          <h3>Grocery Buddy <span class="badge live">Live demo</span></h3>
+          <p>Local-first grocery budget tracker, installable as a PWA. Reads receipts in German, Russian and Belarusian, queues scans offline, and shows monthly spend by category.</p>
+          <div class="tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">IndexedDB</span><span class="tag">OpenAI API</span></div>
+          <div class="links"><a href="https://github.com/IlyaShynkevich/grocery-buddy">Code</a><span class="muted">Receipt scanning is off in the demo</span></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <a class="shot live" data-shot="climatiq" href="https://climatiq-dashboard.vercel.app/" aria-label="Open Climatiq Dashboard">Preview loading<br>Climatiq Dashboard</a>
+        <div class="card-body">
+          <h3>Climatiq Dashboard <span class="badge live">Live</span></h3>
+          <p>Turns monthly electricity, gas and travel data into kg CO2e. Benchmarks five forecasting models, projects the next quarter and compares reduction scenarios. Charts are drawn on canvas without a library.</p>
+          <div class="tags"><span class="tag">JavaScript</span><span class="tag">Canvas API</span><span class="tag">Forecasting</span></div>
+          <div class="links"><a href="https://github.com/IlyaShynkevich/Climatiq_Dashboard">Code</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <a class="shot live" data-shot="florida" href="https://florida-living-hub.vercel.app/" aria-label="Open Florida Living Hub">Preview loading<br>Florida Living Hub</a>
+        <div class="card-body">
+          <h3>Florida Living Hub <span class="badge live">Live · Beta</span></h3>
+          <p>Beach-day planner for 17 Gulf Coast beaches. Scores each day from 0 to 100 using weather, UV and rip current risk, and adds a utility cost estimator. Runs on demo data.</p>
+          <div class="tags"><span class="tag">React</span><span class="tag">Vite</span><span class="tag">Node.js</span><span class="tag">Express</span></div>
+          <div class="links"><a href="https://github.com/IlyaShynkevich/florida-living-hub">Code</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="shot" data-shot="gesture">Screenshot placeholder<br>Gesture control</div>
+        <div class="card-body">
+          <h3>Gesture control system <span class="badge">University</span></h3>
+          <p>Two ultrasonic sensors on an ESP32 detect hand gestures from movement patterns. A web dashboard shows live distances and detected gestures over MQTT.</p>
+          <div class="tags"><span class="tag">ESP32</span><span class="tag">C++</span><span class="tag">MQTT</span><span class="tag">HiveMQ</span></div>
+          <div class="links"><a href="https://github.com/IlyaShynkevich/gesture_control_system">Code</a></div>
+        </div>
+      </article>
+
+      <article class="card wide">
+        <div class="shot" data-shot="wand">Screenshot placeholder<br>Wand shop app</div>
+        <div class="card-body">
+          <h3>Wand shop <span class="badge">Flutter</span></h3>
+          <p>Prototype app for a wand shop with a browsable catalog, detail pages and structured navigation. Built to learn Dart and Flutter.</p>
+          <div class="tags"><span class="tag">Flutter</span><span class="tag">Dart</span></div>
+          <div class="links"><a href="https://github.com/IlyaShynkevich/harry_potter_wand_shop_flutter">Code</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="experience">
+    <h2>Experience</h2>
+    <div class="rows">
+      <div class="row">
+        <div class="when">Aug 2026 – Present</div>
+        <div>
+          <h3>Software Developer (Working Student)</h3>
+          <p>Persobots · Berlin, on-site</p>
+          <p class="desc">Robotics startup building autonomous robot kitchen systems, including the FRYNIUS fryer workstation and FANUC cobot integration. I work on the customer-facing interface and internal system software, directly with the founding team.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="when">Apr 2026 – Present</div>
+        <div>
+          <h3>Intern</h3>
+          <p>SRH Berlin University of Applied Sciences · Hybrid</p>
+          <p class="desc">Projects: CanSat ground station, Climatiq Dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <h2>Education</h2>
+    <div class="rows">
+      <div class="row">
+        <div class="when">2023 – Present</div>
+        <div><h3>B.Sc. Computer Science</h3><p>SRH Berlin University of Applied Sciences</p></div>
+      </div>
+      <div class="row">
+        <div class="when">2021 – 2023</div>
+        <div><h3>Physics and Mathematics</h3><p>BNTU Lyceum · Specialised programme · Grade 9.1 / 10</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="competitions">
+    <h2>Competitions</h2>
+    <div class="rows">
+      <div class="row">
+        <div class="when">June 2026</div>
+        <div><h3>AAS CanSat Competition, international finals</h3><p>SkyBound team for Germany and SRH University · 14th of 36 teams</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <h2>Certifications</h2>
+    <div class="rows">
+      <!-- To add a certificate: copy this row, change the text, and add its image to SHOTS in the script (e.g. "cert-aws": "img/cert-aws.jpg"). -->
+      <div class="row">
+        <div class="when">June 2026</div>
+        <div>
+          <h3>2026 CanSat Competition · Certificate of Completion</h3>
+          <p>American Astronautical Society · SkyBound team, SRH Hochschule Berlin</p>
+          <div class="shot thumb" data-shot="cert-cansat">Certificate</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="when">Nov 2024</div>
+        <div>
+          <h3>Introduction to Packet Tracer · Certificate of Completion</h3>
+          <p>Cisco Networking Academy · Simple networks, network controllers and IoT devices in a simulated smart home</p>
+          <div class="shot thumb" data-shot="cert-cisco">Certificate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <h2>Technologies</h2>
+    <div class="stack">
+      <div class="stack-row"><span class="when">Languages</span><div class="chips"><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Dart</span><span class="chip">C / C++</span><span class="chip">Python</span><span class="chip">SQL</span><span class="chip">HTML / CSS</span></div></div>
+      <div class="stack-row"><span class="when">Frameworks</span><div class="chips"><span class="chip">React</span><span class="chip">Vite</span><span class="chip">Flutter</span><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Three.js</span></div></div>
+      <div class="stack-row"><span class="when">Embedded and IoT</span><div class="chips"><span class="chip">ESP32</span><span class="chip">Raspberry Pi</span><span class="chip">Arduino</span><span class="chip">RISC-V</span><span class="chip">MQTT</span><span class="chip">HiveMQ</span><span class="chip">Mosquitto</span><span class="chip">Serial</span></div></div>
+      <div class="stack-row"><span class="when">Tools</span><div class="chips"><span class="chip">Git</span><span class="chip">REST APIs</span><span class="chip">Canvas API</span><span class="chip">Vercel</span></div></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Let's talk</h2>
+    <div class="contact">
+      <p>I'm looking for software development opportunities, especially around real-time data, embedded systems and dashboards. Email is the fastest way to reach me.</p>
+      <div class="link-list">
+        <div class="link-item">
+          <div style="min-width:0"><span class="lab">Email</span><span class="val" id="email">shynkevichilya@gmail.com</span></div>
+          <button class="copy" id="copyEmail" type="button">Copy</button>
+        </div>
+        <a class="link-item" href="https://www.linkedin.com/in/ilya-shynkevich-42141b399"><div><span class="lab">LinkedIn</span><span class="val">ilya-shynkevich</span></div><span aria-hidden="true">↗</span></a>
+        <a class="link-item" href="https://github.com/IlyaShynkevich"><div><span class="lab">GitHub</span><span class="val">IlyaShynkevich</span></div><span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Ilya Shynkevich</span>
+    <span>Berlin, Germany</span>
+  </footer>
+</main>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+  <img id="lightboxImg" alt="">
+  <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Close">×</button>
+  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous screenshot">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next screenshot">›</button>
+  <span class="lb-count" id="lbCount"></span>
+</div>
+
+<script>
+  // Profile images: set these two paths once the files are in the repo, e.g. "img/me.jpg" and "img/alt.png".
+  var PHOTO_A = "img/alt.jpg";
+  var PHOTO_B = "img/me.jpg";
+  // Project screenshots: add a file path per project, e.g. grocery: "img/grocery.png".
+  var SHOTS = { cansat: "img/cansat.jpg", grocery: "img/grocery.jpg", climatiq: "img/climatiq.jpg", florida: "img/florida.jpg", gesture: "img/gesture.jpg", wand: ["img/wand-1.jpg", "img/wand-2.jpg", "img/wand-3.jpg", "img/wand-4.jpg"] };
+  // A list of files becomes a gallery you can page through.
+  SHOTS["cert-cansat"] = "img/cert-cansat.jpg";
+  SHOTS["cert-cisco"] = "img/cert-cisco.jpg";
+
+  (function () {
+    var root = document.documentElement;
+
+    // Theme toggle with remembered choice
+    try { var saved = localStorage.getItem("theme"); if (saved) root.setAttribute("data-theme", saved); } catch (e) {}
+    document.getElementById("theme").addEventListener("click", function () {
+      var dark = root.getAttribute("data-theme") === "dark" ||
+        (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+      var next = dark ? "light" : "dark";
+      var apply = function () { root.setAttribute("data-theme", next); };
+      // Diagonal wipe from the toggle's corner where the browser supports it; instant switch otherwise.
+      var calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (document.startViewTransition && !calm) document.startViewTransition(apply);
+      else apply();
+      try { localStorage.setItem("theme", next); } catch (e) {}
+    });
+
+    // Profile picture flip
+    function setFace(id, src) {
+      if (!src) return;
+      var el = document.getElementById(id);
+      el.style.backgroundImage = "url('" + src + "')";
+      el.textContent = "";
+      el.classList.remove("empty");
+    }
+    setFace("faceA", PHOTO_A);
+    setFace("faceB", PHOTO_B);
+    var avatar = document.getElementById("avatar");
+    // Mouse users get the hover flip from CSS; touch screens flip on tap.
+    avatar.addEventListener("click", function () {
+      if (matchMedia("(hover: hover)").matches) return;
+      avatar.setAttribute("aria-pressed", avatar.getAttribute("aria-pressed") === "true" ? "false" : "true");
+    });
+
+    // Screenshots: live sites open on click; screenshots enlarge, and lists page through as a gallery
+    var lb = document.getElementById("lightbox"), lbImg = document.getElementById("lightboxImg");
+    var lbPrev = document.getElementById("lbPrev"), lbNext = document.getElementById("lbNext"), lbCount = document.getElementById("lbCount");
+    var gallery = [], at = 0, label = "";
+    function show(i) {
+      at = (i + gallery.length) % gallery.length;
+      lbImg.src = gallery[at];
+      lbImg.alt = label + (gallery.length > 1 ? ", screen " + (at + 1) + " of " + gallery.length : "");
+      var multi = gallery.length > 1;
+      lbPrev.hidden = lbNext.hidden = lbCount.hidden = !multi;
+      lbCount.textContent = (at + 1) + " / " + gallery.length;
+    }
+    function openGallery(list, i, name) { gallery = list; label = name; show(i); lb.hidden = false; document.getElementById("lbClose").focus(); }
+    function closeGallery() { lb.hidden = true; }
+
+    document.querySelectorAll("[data-shot]").forEach(function (box) {
+      var key = box.getAttribute("data-shot");
+      var entry = SHOTS[key];
+      if (!entry || (Array.isArray(entry) && !entry.length)) return;
+      var list = Array.isArray(entry) ? entry : [entry];
+      var holder = box.closest(".card, .row");
+      var heading = holder && holder.querySelector("h3");
+      var name = ((heading && heading.firstChild.textContent) || key).trim();
+      box.textContent = "";
+
+      if (box.tagName === "A") {
+        var pv = new Image(); pv.src = list[0]; pv.loading = "lazy"; pv.alt = "Preview of the " + name + " website";
+        box.appendChild(pv); box.classList.add("has-preview");
+        return;
+      }
+
+      if (list.length > 1) {
+        box.classList.add("phones");
+        list.forEach(function (src, n) {
+          var t = new Image(); t.src = src; t.loading = "lazy"; t.alt = name + " screen " + (n + 1);
+          box.appendChild(t);
+        });
+        var c = document.createElement("span"); c.className = "count"; c.textContent = list.length + " screens";
+        box.appendChild(c);
+      } else {
+        var one = new Image(); one.src = list[0]; one.loading = "lazy"; one.alt = "Screenshot of " + name;
+        box.appendChild(one);
+      }
+      box.classList.add("has-img");
+      box.setAttribute("role", "button");
+      box.setAttribute("tabindex", "0");
+      box.setAttribute("aria-label", list.length > 1 ? "View " + list.length + " screenshots of " + name : "Enlarge screenshot of " + name);
+      box.addEventListener("click", function (e) {
+        var imgs = Array.prototype.slice.call(box.querySelectorAll("img"));
+        var hit = imgs.indexOf(e.target);
+        openGallery(list, hit > 0 ? hit : 0, name);
+      });
+      box.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGallery(list, 0, name); } });
+    });
+
+    lb.addEventListener("click", function (e) { if (e.target === lb) closeGallery(); });
+    document.getElementById("lbClose").addEventListener("click", closeGallery);
+    lbPrev.addEventListener("click", function () { show(at - 1); });
+    lbNext.addEventListener("click", function () { show(at + 1); });
+    document.addEventListener("keydown", function (e) {
+      if (lb.hidden) return;
+      if (e.key === "Escape") closeGallery();
+      else if (e.key === "ArrowLeft" && gallery.length > 1) show(at - 1);
+      else if (e.key === "ArrowRight" && gallery.length > 1) show(at + 1);
+    });
+    var x0 = null;
+    lb.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener("touchend", function (e) {
+      if (x0 === null || gallery.length < 2) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) show(dx < 0 ? at + 1 : at - 1);
+    });
+
+    // Copy email
+    var btn = document.getElementById("copyEmail");
+    btn.addEventListener("click", function () {
+      var text = document.getElementById("email").textContent;
+      var done = function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1600); };
+      var fallback = function () {
+        var r = document.createRange(); r.selectNodeContents(document.getElementById("email"));
+        var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+  })();
+</script>
+</body>
+</html>
